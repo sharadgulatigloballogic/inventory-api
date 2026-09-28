@@ -14,7 +14,7 @@
     <groupId>com.example</groupId>
     <artifactId>defect-resolution-sample-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>defect-resolution-sample-api</name>
+    <name>inventory-api</name>
     <description>Spring Boot REST API intentionally seeded with defects for agent testing</description>
 
     <properties>
