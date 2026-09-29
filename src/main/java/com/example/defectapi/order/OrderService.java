@@ -31,12 +31,7 @@ public class OrderService {
     }
 
     public Order findById(Long id) {
-        // DEF-101: missing-order failure path. Read logs/DEF-101-missing-order.log for the API contract.
-        return orders.entrySet().stream()
-                .filter(entry -> entry.getKey().equals(id))
-                .map(Map.Entry::getValue)
-                .findFirst()
-                .get();
+        return orders.get(id);
     }
 
     public Order create(CreateOrderRequest request) {

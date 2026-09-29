@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -28,7 +29,11 @@ public class OrderController {
 
     @GetMapping("/{id}")
     public Order findById(@PathVariable Long id) {
-        return orderService.findById(id);
+        Order order = orderService.findById(id);
+        if (order == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found: " + id);
+        }
+        return order;
     }
 
     @PostMapping
