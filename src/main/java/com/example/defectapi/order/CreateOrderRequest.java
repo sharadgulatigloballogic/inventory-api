@@ -14,7 +14,7 @@ public class CreateOrderRequest {
     @NotBlank private String productName;
     @NotNull @Min(1) private Integer quantity;
     @NotNull private BigDecimal unitPrice;
-    private BigDecimal discountPercent;
+    private BigDecimal discountPercent = BigDecimal.ZERO;
     @NotBlank private String shippingAddress;
     private String status;
 
