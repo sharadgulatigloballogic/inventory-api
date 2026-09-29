@@ -2,6 +2,7 @@ package com.example.defectapi;
 
 import com.example.defectapi.inventory.InventoryService;
 import com.example.defectapi.order.CreateOrderRequest;
+import com.example.defectapi.order.Order;
 import com.example.defectapi.order.OrderService;
 import org.junit.jupiter.api.Test;
 
@@ -34,6 +35,46 @@ class DefectReproductionTest {
         request.setShippingAddress("100 King Street, Toronto, ON");
 
         assertEquals(new BigDecimal("99.98"), new OrderService().create(request).getUnitPrice());
+    }
+
+    @Test
+    void createWithOmittedDiscountPercentDefaultsToZero() {
+        // VDLC-2345: omitted discountPercent must default to 0 (no discount) instead of throwing.
+        CreateOrderRequest request = new CreateOrderRequest();
+        request.setCustomerId(42L);
+        request.setCustomerName("test");
+        request.setEmail("test@example.com");
+        request.setProductCode("BK-100");
+        request.setProductName("Spring in Action");
+        request.setQuantity(2);
+        request.setUnitPrice(new BigDecimal("49.99"));
+        request.setShippingAddress("100 Acme Street, Toronto, ON");
+        request.setStatus("NEW");
+
+        Order order = assertDoesNotThrow(() -> new OrderService().create(request));
+
+        assertEquals(new BigDecimal("99.98"), order.getUnitPrice());
+        assertEquals(BigDecimal.ZERO, order.getDiscountPercent());
+    }
+
+    @Test
+    void createWithSuppliedDiscountPercentAppliesDiscount() {
+        CreateOrderRequest request = new CreateOrderRequest();
+        request.setCustomerId(42L);
+        request.setCustomerName("test");
+        request.setEmail("test@example.com");
+        request.setProductCode("BK-100");
+        request.setProductName("Spring in Action");
+        request.setQuantity(2);
+        request.setUnitPrice(new BigDecimal("49.99"));
+        request.setDiscountPercent(new BigDecimal("10.00"));
+        request.setShippingAddress("100 Acme Street, Toronto, ON");
+        request.setStatus("NEW");
+
+        Order order = new OrderService().create(request);
+
+        assertEquals(new BigDecimal("89.98"), order.getUnitPrice());
+        assertEquals(new BigDecimal("10.00"), order.getDiscountPercent());
     }
 
     @Test

@@ -43,16 +43,17 @@ public class OrderService {
         BigDecimal subtotal = request.getUnitPrice()
                 .multiply(BigDecimal.valueOf(request.getQuantity()));
 
-        // DEF-102: order creation fails for the omitted optional-field scenario in the attached log.
+        BigDecimal discountPercent = request.getDiscountPercent() != null
+                ? request.getDiscountPercent() : BigDecimal.ZERO;
         BigDecimal discount = subtotal
-                .multiply(request.getDiscountPercent())
+                .multiply(discountPercent)
                 .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
         BigDecimal total = subtotal.subtract(discount);
 
         Order order = new Order(sequence.incrementAndGet(), request.getCustomerId(),
                 request.getCustomerName(), request.getEmail(), request.getProductCode(),
                 request.getProductName(), request.getQuantity(), total,
-                request.getDiscountPercent(), request.getShippingAddress(),
+                discountPercent, request.getShippingAddress(),
                 request.getStatus() == null ? "NEW" : request.getStatus(), Instant.now());
         orders.put(order.getId(), order);
         return order;
