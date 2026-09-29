@@ -1,8 +1,6 @@
 package com.example.defectapi.order;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -17,12 +15,12 @@ class OrderControllerTest {
     }
 
     @Test
-    void findByIdReturns404ForUnknownId() {
+    void findByIdThrowsNotFoundForUnknownId() {
         OrderController controller = new OrderController(new OrderService());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+        OrderNotFoundException exception = assertThrows(OrderNotFoundException.class,
                 () -> controller.findById(9999L));
 
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Order not found: 9999", exception.getMessage());
     }
 }

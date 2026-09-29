@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -30,8 +31,8 @@ public class OrderService {
                 .toList();
     }
 
-    public Order findById(Long id) {
-        return orders.get(id);
+    public Optional<Order> findById(Long id) {
+        return Optional.ofNullable(orders.get(id));
     }
 
     public Order create(CreateOrderRequest request) {
